@@ -55,7 +55,17 @@ def run_movie_agent():
     print(f"User: {prompt}\n")
     try:
         response_dict = llm.generate(prompt)
-        print(f"Chatbot:\n{response_dict.get('content', '')}")
+        print(f"Chatbot Content: {response_dict.get('content', '')}")
+        print("-" * 40)
+        print(f"Metrics (Chatbot): {response_dict.get('usage', {})} | Latency: {response_dict.get('latency_ms')}ms")
+        
+        # Log chatbot baseline metrics
+        from src.telemetry.logger import logger
+        logger.log_event("CHATBOT_BASELINE_END", {
+            "input": prompt,
+            "usage": response_dict.get("usage"),
+            "latency_ms": response_dict.get("latency_ms")
+        })
     except Exception as e:
         print(f"Chatbot failed: {e}")
 
@@ -67,9 +77,17 @@ def run_movie_agent():
     agent = ReActAgent(llm=llm, tools=tools, max_steps=10)
 
     print(f"User: {prompt}\n")
+    import time
+    start_time_agent = time.time()
     try:
-        final_answer = agent.run(prompt)
+        agent_result = agent.run(prompt)
+        final_answer = agent_result["answer"]
+        metrics = agent_result["metrics"]
+        
         print(f"\nFinal Agent Answer: {final_answer}")
+        print("-" * 40)
+        print(f"Total Agent Metrics: {metrics}")
+        print(f"Total Flow Latency: {metrics['total_latency_ms']}ms")
     except Exception as e:
         print(f"\nAgent execution failed: {e}")
 

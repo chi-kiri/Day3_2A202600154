@@ -56,6 +56,15 @@ Final Answer: [Your clear and helpful response here]"""
         self.history = [{"role": "user", "content": user_input}]
         steps = 0
         full_response = ""
+        
+        # Metrics accumulation
+        total_prompt_tokens = 0
+        total_completion_tokens = 0
+        total_latency_ms = 0
+        start_time_all = os.times().elapsed if hasattr(os, 'times') else 0 # Simple way to get wall clock if available, but time.time() is safer
+
+        import time
+        start_time_all = time.time()
 
         while steps < self.max_steps:
             # 1. Generate LLM response
@@ -67,19 +76,46 @@ Final Answer: [Your clear and helpful response here]"""
             response_text = result["content"]
             full_response += response_text
 
+            # Update metrics
+            step_prompt_tokens = result["usage"].get("prompt_tokens", 0)
+            step_completion_tokens = result["usage"].get("completion_tokens", 0)
+            step_latency = result["latency_ms"]
+            
+            total_prompt_tokens += step_prompt_tokens
+            total_completion_tokens += step_completion_tokens
+            total_latency_ms += step_latency
+
             print(f"Response Text: {response_text}")
+            print(f"Step {steps} Metrics: Input={step_prompt_tokens}, Output={step_completion_tokens}, Latency={step_latency}ms")
+            print(f"Cumulative Metrics: Input={total_prompt_tokens}, Output={total_completion_tokens}, LLM Latency={total_latency_ms}ms")
             
             logger.log_event("AGENT_STEP", {
                 "step": steps,
+                "type": "llm_generation",
                 "response_len": len(response_text),
-                "tokens_used": result["usage"]["total_tokens"]
+                "prompt_tokens": step_prompt_tokens,
+                "completion_tokens": step_completion_tokens,
+                "latency_ms": step_latency,
+                "total_prompt_so_far": total_prompt_tokens,
+                "total_completion_so_far": total_completion_tokens
             })
             
             # 2. Check if we have Final Answer
             if "Final Answer:" in response_text:
                 final_answer = response_text.split("Final Answer:")[-1].strip()
-                logger.log_event("AGENT_END", {"steps": steps, "status": "completed"})
-                return final_answer
+                wall_latency = int((time.time() - start_time_all) * 1000)
+                metrics = {
+                    "steps": steps + 1,
+                    "total_prompt_tokens": total_prompt_tokens,
+                    "total_completion_tokens": total_completion_tokens,
+                    "total_latency_ms": wall_latency,
+                    "llm_only_latency_ms": total_latency_ms
+                }
+                logger.log_event("AGENT_END", {"status": "completed", **metrics})
+                return {
+                    "answer": final_answer,
+                    "metrics": metrics
+                }
             
             # 3. Parse JSON Action from response
             # Look for JSON blocks inside ```json ... ``` or just { ... }
@@ -141,8 +177,19 @@ Try again:"""
             
             steps += 1
         
-        logger.log_event("AGENT_END", {"steps": steps, "status": "max_steps_reached"})
-        return f"Max steps reached ({self.max_steps}). Partial Answer:\n{full_response}"
+        wall_latency = int((time.time() - start_time_all) * 1000)
+        metrics = {
+            "steps": steps,
+            "total_prompt_tokens": total_prompt_tokens,
+            "total_completion_tokens": total_completion_tokens,
+            "total_latency_ms": wall_latency,
+            "llm_only_latency_ms": total_latency_ms
+        }
+        logger.log_event("AGENT_END", {"status": "max_steps_reached", **metrics})
+        return {
+            "answer": f"Max steps reached ({self.max_steps}). Partial Answer:\n{full_response}",
+            "metrics": metrics
+        }
 
     def _execute_tool(self, tool_name: str, args_str: str) -> str:
         """
