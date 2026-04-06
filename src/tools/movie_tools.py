@@ -45,6 +45,17 @@ Overview: {movie.get('overview')}
     except ValueError:
         return "Error: Invalid movie ID. Must be an integer."
 
+def recommend_movies(movie_id: str) -> str:
+    """Useful for recommending similar movies based on a movie_id (int)."""
+    try:
+        m_id = int(movie_id.strip("'\""))
+        result = movie_api.get_movie_recommendations(m_id)
+        if result["status"] == "success":
+            return movie_api.format_search_results(result["results"], limit=5)
+        return f"Error: {result.get('message', 'Unknown error')}"
+    except ValueError:
+        return "Error: Invalid movie ID. Must be an integer."
+
 def get_movie_tools():
     return [
         {
@@ -54,12 +65,17 @@ def get_movie_tools():
         },
         {
             "name": "find_by_genre",
-            "description": "Find movies in a genre by ID. Arg: genre_id (int). Examples: 28 (Action), 35 (Comedy), 27 (Horror).",
+            "description": "Find movies in a genre by ID. Arg: genre_id (int). 28 (Action), 35 (Comedy), 27 (Horror).",
             "func": find_by_genre
         },
         {
             "name": "get_details",
             "description": "Get plot and rating for a specific movie. Arg: movie_id (int).",
             "func": get_details
+        },
+        {
+            "name": "recommend_movies",
+            "description": "Suggest similar movies based on a movie ID. Arg: movie_id (int).",
+            "func": recommend_movies
         }
     ]

@@ -46,7 +46,8 @@ def run_movie_agent():
         print(f"Failed to load provider: {e}")
         return
 
-    prompt = "I'm looking for a good action movie from 2024. Can you find some and give me details of the best one?"
+    # prompt = "Search for some recent action movies genre. Then, pick the first movie from the results, find its detailed overview and runtime. Finally, suggest some similar movies based on that one."
+    prompt = "I really enjoyed 'The Dark Knight'. Could you recommend 3 related movies and provide their plots and ratings?"
 
     print("\n" + "=" * 80)
     print("🤖 CHATBOT BASELINE (No Tools)")

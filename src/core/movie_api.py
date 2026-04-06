@@ -111,6 +111,41 @@ class MovieAPI:
                 "message": str(e)
             }
     
+    def get_movie_recommendations(self, movie_id: int) -> Dict[str, Any]:
+        """
+        Get similar/recommended movies based on a movie ID.
+        
+        Args:
+            movie_id: TheMovieDB movie ID
+            
+        Returns:
+            Dict with recommendations
+        """
+        try:
+            endpoint = f"{self.BASE_URL}/movie/{movie_id}/recommendations"
+            params = {
+                "api_key": self.API_KEY,
+                "language": "en-US"
+            }
+            
+            response = requests.get(endpoint, params=params)
+            response.raise_for_status()
+            
+            data = response.json()
+            logger.log_event("MOVIE_RECOMMEND", {"movie_id": movie_id, "results_count": len(data.get("results", []))})
+            
+            return {
+                "status": "success",
+                "results": data.get("results", []),
+                "total_results": data.get("total_results", 0)
+            }
+        except Exception as e:
+            logger.error(f"Movie recommendation error: {str(e)}")
+            return {
+                "status": "error",
+                "message": str(e)
+            }
+    
     def get_movie_details(self, movie_id: int) -> Dict[str, Any]:
         """
         Get detailed information about a specific movie.
@@ -164,8 +199,9 @@ class MovieAPI:
             title = movie.get("title", "Unknown")
             release_date = movie.get("release_date", "N/A")
             rating = movie.get("vote_average", "N/A")
+            movie_id = movie.get("id", "N/A")
             output.append(
-                f"{i}. {title} ({release_date}) - Rating: {rating}/10"
+                f"{i}. {title} ({release_date}) [ID: {movie_id}] - Rating: {rating}/10"
             )
         
         return "\n".join(output)
