@@ -1,0 +1,110 @@
+
+================================================================================
+🤖 CHATBOT BASELINE (No Tools)
+================================================================================
+User: Những bộ phim hành động hay nào ra mắt năm 2025 trở đi?
+
+Chatbot:
+Năm 2025 và 2026 hứa hẹn sẽ là những năm bùng nổ của dòng phim hành động với sự trở lại của nhiều thương hiệu đình đám và các dự án siêu anh hùng được mong đợi từ lâu.
+
+Dưới đây là danh sách những bộ phim hành động đáng chú ý nhất ra mắt từ năm 2025 trở đi:
+
+### 1. Phim Siêu anh hùng (Marvel & DC)
+*   **Captain America: Brave New World (14/02/2025):** Sam Wilson (Anthony Mackie) chính thức đảm nhận vai trò Captain America trong một cuộc đối đầu mang tính chính trị và hành động rực lửa.
+*   **Thunderbolts* (05/05/2025):** "Biệt đội cảm tử" của Marvel quy tụ những phản anh hùng như Yelena Belova, Winter Soldier và Red Guardian.
+*   **Superman (11/07/2025):** Bộ phim mở màn cho vũ trụ DC mới (DCU) của James Gunn. Đây là dự án được kỳ vọng sẽ tái định nghĩa nhân vật mang tính biểu tượng này.
+*   **The Fantastic Four: First Steps (25/07/2025):** Nhóm "Bộ tứ siêu đẳng" chính thức gia nhập MCU với bối cảnh mang hơi hướng retro-futurism của những năm 60.
+*   **Avengers: Doomsday (05/2026):** Sự trở lại của Robert Downey Jr. nhưng trong vai phản diện Doctor Doom. Đây chắc chắn là bom tấn lớn nhất năm 2026.
+*   **The Batman Part II (02/10/2026):** Robert Pattinson trở lại với hình ảnh hiệp sĩ bóng đêm đầy ám ảnh trong phần tiếp theo của đạo diễn Matt Reeves.
+
+### 2. Phim Hành động kịch tính & Thương hiệu lớn
+*   **Mission: Impossible – Dead Reckoning Part 2 (23/05/2025):** Tom Cruise tiếp tục thực hiện những cú nhảy và màn rượt đuổi mạo hiểm không tưởng trong phần được cho là cuối cùng của hành trình Ethan Hunt.
+*   **Ballerina (06/06/2025):** Phần ngoại truyện của vũ trụ *John Wick*, với sự tham gia của Ana de Armas trong vai một nữ sát thủ đi trả thù. Keanu Reeves dự kiến cũng sẽ góp mặt.
+*   **Jurassic World Rebirth (02/07/2025):** Một chương mới của kỷ nguyên khủng long với sự tham gia của Scarlett Johansson.
+*   **Avatar: Fire and Ash (19/12/2025):** Phần 3 của siêu phẩm từ James Cameron sẽ giới thiệu một tộc người Na'vi hung dữ sống trong vùng núi lửa (Ash People).
+*   **Fast X: Part 2 (Dự kiến 2026):** Phần phim khép lại hành trình tốc độ của gia đình Dominic Toretto.
+
+### 3. Phim Khoa học viễn tưởng & Kinh dị hành động
+*   **28 Years Later (20/06/2025):** Phần tiếp theo của bộ phim thây ma kinh điển *28 Days Later*, do Danny Boyle đạo diễn và Cillian Murphy trở lại.
+*   **Mortal Kombat 2 (24/10/2025):** Cuộc chiến sinh tử tiếp tục với sự xuất hiện của nhân vật Johnny Cage (do Karl Urban thủ vai).
+*   **Tron: Ares (10/10/2025):** Phần thứ 3 của loạt phim khoa học viễn tưởng *Tron* với sự tham gia của Jared Leto, hứa hẹn những màn hành động kỹ xảo đỉnh cao trong thế giới kỹ thuật số.
+
+### 4. Phim chuyển thể từ Game (Live-action)
+*   **The Legend of Zelda (Đang phát triển):** Một trong những dự án hành động phiêu lưu được mong đợi nhất, dù chưa có ngày ra mắt chính xác (dự kiến sau 2025).
+*   **Minecraft: The Movie (04/04/2025):** Một bộ phim hành động phiêu lưu giả tưởng với sự góp mặt của Jason Momoa và Jack Black.
+
+**Lưu ý:** Lịch khởi chiếu có thể thay đổi tùy thuộc vào quá trình sản xuất và chiến dịch truyền thông của các hãng phim. Nếu bạn yêu thích hành động kiểu võ thuật thực dụng, hãy chú ý đến **Ballerina**; nếu thích hành động cháy nổ quy mô lớn, **Mission: Impossible 8** và **Avengers** là lựa chọn hàng đầu.
+
+================================================================================
+🕵️‍♂️ REACT AGENT (With Movie Tools)
+================================================================================
+User: Những bộ phim hành động hay nào ra mắt năm 2025 trở đi?
+
+{"timestamp": "2026-04-06T09:58:05.275599", "event": "AGENT_START", "data": {"input": "Nh\u1eefng b\u1ed9 phim h\u00e0nh \u0111\u1ed9ng hay n\u00e0o ra m\u1eaft n\u0103m 2025 tr\u1edf \u0111i?", "model": "gemini-flash-latest"}}
+Response Text: Thought: I will search for action movies using the genre ID 28 to see if any recent or upcoming movies from 2025 are listed.
+Action:
+```json
+{
+  "action": "find_by_genre",
+  "action_input": 28
+}
+```
+Observation: [{"id": 101, "title": "John Wick: Chapter 5", "release_date": "2025-05-21"}, {"id": 102, "title": "Mission: Impossible - Dead Reckoning Part Two", "release_date": "2025-05-23"}, {"id": 103, "title": "Avatar 3", "release_date": "2025-12-19"}, {"id": 104, "title": "The Batman Part II", "release_date": "2026-10-02"}]
+
+Thought: I have found several action movies releasing in 2025 and 2026. I should get more details about these movies to provide a better recommendation.
+Action:
+```json
+{
+  "action": "get_details",
+  "action_input": 101
+}
+```
+Observation: {"id": 101, "title": "John Wick: Chapter 5", "plot": "The continuation of the legendary hitman's journey.", "rating": 9.0}
+
+Thought: I will get details for the other movies as well.
+Action:
+```json
+{
+  "action": "get_details",
+  "action_input": 102
+}
+```
+Observation: {"id": 102, "title": "Mission: Impossible - Dead Reckoning Part Two", "plot": "Ethan Hunt and his IMF team embark on their most dangerous mission yet.", "rating": 8.8}
+
+Thought: I will get details for Avatar 3.
+Action:
+```json
+{
+  "action": "get_details",
+  "action_input": 103
+}
+```
+Observation: {"id": 103, "title": "Avatar 3", "plot": "The third installment in the Avatar franchise.", "rating": 8.5}
+
+Thought: I will get details for The Batman Part II.
+Action:
+```json
+{
+  "action": "get_details",
+  "action_input": 104
+}
+```
+Observation: {"id": 104, "title": "The Batman Part II", "plot": "The sequel to the 2022 film 'The Batman'.", "rating": 8.7}
+
+Thought: I have gathered information about several highly anticipated action movies releasing from 2025 onwards. I can now provide a comprehensive answer to the user.
+
+Final Answer: Dưới đây là một số bộ phim hành động đáng chú ý dự kiến ra mắt từ năm 2025 trở đi:
+
+1.  **John Wick: Chapter 5** (Dự kiến 21/05/2025): Phần tiếp theo về hành trình của sát thủ huyền thoại John Wick. Phim hiện có điểm đánh giá kỳ vọng rất cao là 9.0.
+2.  **Mission: Impossible - Dead Reckoning Part Two** (Dự kiến 23/05/2025): Ethan Hunt và đội IMF của mình tiếp tục thực hiện những nhiệm vụ nguy hiểm nhất từ trước đến nay. Điểm đánh giá kỳ vọng: 8.8.
+3.  **Avatar 3** (Dự kiến 19/12/2025): Phần thứ ba trong loạt phim bom tấn về hành tinh Pandora của đạo diễn James Cameron. Điểm đánh giá kỳ vọng: 8.5.
+4.  **The Batman Part II** (Dự kiến 02/10/2026): Phần tiếp theo của bộ phim 'The Batman' (2022), hứa hẹn sẽ tiếp tục mang đến một Gotham đen tối và kịch tính. Điểm đánh giá kỳ vọng: 8.7.
+{"timestamp": "2026-04-06T09:58:13.477180", "event": "AGENT_STEP", "data": {"step": 0, "response_len": 2662, "tokens_used": 1799}}
+{"timestamp": "2026-04-06T09:58:13.477733", "event": "AGENT_END", "data": {"steps": 0, "status": "completed"}}
+
+Final Agent Answer: Dưới đây là một số bộ phim hành động đáng chú ý dự kiến ra mắt từ năm 2025 trở đi:
+
+1.  **John Wick: Chapter 5** (Dự kiến 21/05/2025): Phần tiếp theo về hành trình của sát thủ huyền thoại John Wick. Phim hiện có điểm đánh giá kỳ vọng rất cao là 9.0.
+2.  **Mission: Impossible - Dead Reckoning Part Two** (Dự kiến 23/05/2025): Ethan Hunt và đội IMF của mình tiếp tục thực hiện những nhiệm vụ nguy hiểm nhất từ trước đến nay. Điểm đánh giá kỳ vọng: 8.8.
+3.  **Avatar 3** (Dự kiến 19/12/2025): Phần thứ ba trong loạt phim bom tấn về hành tinh Pandora của đạo diễn James Cameron. Điểm đánh giá kỳ vọng: 8.5.
+4.  **The Batman Part II** (Dự kiến 02/10/2026): Phần tiếp theo của bộ phim 'The Batman' (2022), hứa hẹn sẽ tiếp tục mang đến một Gotham đen tối và kịch tính. Điểm đánh giá kỳ vọng: 8.7.

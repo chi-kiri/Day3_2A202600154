@@ -1,7 +1,7 @@
 # Báo cáo Nhóm: Lab 3 - Hệ thống Agentic ReAct (Movie Assistant)
 
-- **Tên Nhóm**: Movie Agent Master
-- **Thành viên**: [Điền tên bạn và các thành viên tại đây]
+- **Tên Nhóm**: Movie Agent Master - Table A3
+- **Thành viên**: Nguyễn Tuấn Kiệt, Nguyễn Văn Bách, Nguyễn Duy Hưng, Nguyễn Xuân Hoàng, Nguyễn Chí Hoàng, Nguyễn Đức Duy
 - **Ngày thực hiện**: 2026-04-06
 
 ---
@@ -10,8 +10,7 @@
 
 Mục tiêu của nhóm là xây dựng một Agent có khả năng tra cứu thông tin phim thời gian thực (real-time) để khắc phục nhược điểm "thiếu dữ liệu mới" của các mô hình LLM truyền thống.
 
-- **Tỉ lệ thành công**: 95% (Vượt qua các câu hỏi về phim năm 2024 mà Chatbot Baseline hoàn toàn chịu thua).
-- **Kết quả chính**: Agent đã sử dụng thành công Tool `search_movies` để truy xuất phim "Danger Zone" (2024) và cung cấp chi tiết đánh giá cho khách hàng, trong khi Chatbot chỉ có thể xin lỗi do giới hạn kiến thức.
+- **Kết quả chính**: Agent đã sử dụng thành công Tool `recommend_movies` để truy xuất phim "Danger Zone" (2024) và cung cấp recommendation film với rating IMDB chính xác, thay vì hallucinate rating như chatbot cơ bản
 
 ---
 
@@ -34,12 +33,15 @@ graph TD
 
 | Tên Tool | Input Format | Mục đích sử dụng |
 | :--- | :--- | :--- |
-| `search_movies` | `string` | Tìm kiếm phim theo tiêu đề hoặc từ khoá. |
-| `find_by_genre` | `int` | Lọc danh sách phim theo mã thể loại (VD: 28 cho Phim hành động). |
-| `get_details` | `int` | Lấy chi tiết cốt truyện và điểm rating của một bộ phim cụ thể. |
+| `search_movies` | `name (string)` | Tìm kiếm phim theo tiêu đề hoặc từ khoá, return id. |
+| `find_by_genre` |  `genre_id (int)` | Lọc danh sách phim theo mã thể loại (VD: 28 cho Phim hành động). |
+| `get_details` | `movie_id (int)` | Lấy chi tiết cốt truyện và điểm rating của một bộ phim cụ thể. |
+| `recommend_movie` | `movie_id(int)` | Gọi API để lấy recommend movie từ movie đang có, trong database của TMDB |
+
 
 ### 2.3 LLM Provider
 - **Chính**: OpenAI gpt-4o (Độ chính xác cao trong việc gọi tool).
+- **Alternative**: Gemini Flash Latest (nhanh hơn)
 - **Phụ (Backup)**: Local Phi-3 (Dùng khi mất kết nối API hoặc tiết kiệm chi phí).
 
 ---
@@ -48,28 +50,31 @@ graph TD
 
 Dựa trên dữ liệu thực tế từ file `logs/2026-04-06.log`:
 
-- **Độ trễ trung bình (Latency)**: ~4500ms (Bao gồm thời gian gọi API MovieDB và LLM suy luận).
-- **Token tiêu thụ trung bình**: ~520 tokens/task.
-- **Chi phí vận hành**: Rất thấp (Tối ưu bằng cách giới hạn `max_steps = 10` để tránh lặp vô hạn).
+- **Độ trễ trung bình (Latency)**: ~4500ms (Bao gồm thời gian gọi API MovieDB và LLM suy luận, ).
+- **Token tiêu thụ trung bình**: ~1400-2500 tokens/task (input + output).
+- **Chi phí vận hành**: thấp (Tối ưu bằng cách giới hạn `max_steps = 10` để tránh lặp vô hạn).
 
 ---
 
 ## 4. Phân tích nguyên nhân lỗi (Root Cause Analysis - RCA)
 
-### Case Study: Lỗi Cứng (Hardcoding Error) ở phiên bản v1
-- **Vấn đề**: Ở bản v1, Agent được viết theo kiểu "hardcode" (viết chết) các hàm Movie API bên trong lớp `ReActAgent`.
-- **Hậu quả**: Agent không thể linh hoạt chuyển đổi sang các mục đích khác (như Thương mại điện tử) mà không phải sửa lại code lõi. Log ghi nhận Agent bị rối loạn khi người dùng hỏi các câu hỏi ngoài phạm vi phim.
-- **Nguyên nhân**: Thiết kế chưa tuân thủ tính "Generic" của kiến trúc ReAct.
-- **Giải pháp (v2)**: Nhóm đã thực hiện Refactor (tái cấu trúc), đưa các Tool vào danh sách truyền từ ngoài vào. Giúp Agent v2 cực kỳ linh hoạt và sạch sẽ.
+### Case Study: không recommend movie theo API ở phiên bản v1
+- **Vấn đề**: Ở bản v1, Agent `ReActAgent` khi nhận prompt đã tự autocomplete recommendation chứ không gọi recommendation API của TMDB. Việc lấy thông tin của phim hoạt động bình thuờng.
+- **Hậu quả**: Recommendation dựa trên training data của model, có thể bị lỗi thời.
+- **Nguyên nhân**: Chưa có tool rõ ràng cho việc recommend.
+- **Target tool workflow**: Fetch movie id -> Fetch recommendation -> Fetch info of recommended movies
+- **Actual flow**: Fetch movie id -> LLM complete recommendation instead -> Fetch id from recommended names -> Fetch info of recommended movies
+- **Giải pháp (v2)**: Tạo tool `recommend_movies` để cho agent call khi đã có id của phim source. Bây giờ thì recommendation sẽ dựa trên API của TMDB với algorithm tốt thay vì autocomplete trong LLM core
 
 ---
 
 ## 5. Thử nghiệm So sánh (Ablation Studies)
 
-| Tình huống | Kết quả Chatbot | Kết quả Agent | Người thắng |
+| Tình huống | Prompt | Kết quả Chatbot | Kết quả Agent | Người thắng |
 | :--- | :--- | :--- | :--- |
-| Hỏi phim năm 2024 | "Xin lỗi, dữ liệu của tôi chỉ đến 2023" | Tự tìm ra phim "Danger Zone" | **Agent** |
-| Hỏi phim hành động hay | Đưa ra danh sách cũ (Inception, v.v.) | Đưa ra phim mới nhất đang phổ biến | **Agent** |
+| Hỏi phim theo genre và năm |"Những bộ phim hành động hay nào ra mắt năm 2025 trở đi?" | Hallucinate phim - Knowledge cutoff (GPT-4o only - Gemini có cập nhật thông tin) | Tự tìm ra phim ra mắt trong năm 2025 và 2026 | **Agent** (except Gemini) |
+| Hỏi phim dựa trên phim đang thích | "Hãy giới thiệu cho tôi những bộ phim hay nếu tôi thích Chúa tể những chiếc nhẫn." | Recommend list phim thành công, có mô tả | Recommend list phim thành công, nhưng có thêm rating IMDB đi kèm |
+
 
 ---
 

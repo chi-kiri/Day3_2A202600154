@@ -47,7 +47,9 @@ def run_movie_agent():
         return
 
     # prompt = "Search for some recent action movies genre. Then, pick the first movie from the results, find its detailed overview and runtime. Finally, suggest some similar movies based on that one."
-    prompt = "I really enjoyed 'The Dark Knight'. Could you recommend 3 related movies and provide their plots and ratings?"
+    # prompt = "I really enjoyed 'The Dark Knight'. Could you recommend 3 related movies and provide their plots and ratings?"
+    # prompt = "Những bộ phim hành động hay nào ra mắt năm 2025 trở đi?"
+    prompt = "Hãy giới thiệu cho tôi những bộ phim hay nếu tôi thích Chúa tể những chiếc nhẫn."
 
     print("\n" + "=" * 80)
     print("🤖 CHATBOT BASELINE (No Tools)")
